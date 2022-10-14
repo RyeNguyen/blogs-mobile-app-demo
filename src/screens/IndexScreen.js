@@ -1,10 +1,21 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Button, FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Context as BlogContext} from "../context/BlogContext";
+import {Context as blogContext} from "../context/BlogContext";
 import {EvilIcons} from '@expo/vector-icons';
 
 const IndexScreen = ({navigation}) => {
-    const {state, deleteBlogPost} = useContext(BlogContext);
+    const {state, deleteBlogPost, getBlogPosts} = useContext(blogContext);
+
+    useEffect(() => {
+        getBlogPosts();
+        const listener = navigation.addListener('didFocus', () => {
+            getBlogPosts();
+        });
+
+        return () => {
+            listener.remove();
+        }
+    }, []);
 
     return <>
         <Button title='Add Post' onPress={() => navigation.navigate('Create')}/>
